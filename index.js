@@ -14,21 +14,22 @@ server.on("request", (req, res) => {
   const items = req.url.split("/");
   console.log(items);
   console.log(req.method);
-  if (req.method.toString() === "POST" && items[2] === "friends") {
+  if (req.method === "POST" && items[1] === "friends") {
     req.on("data", (data) => {
       const friend = data.toString();
       console.log(`Request: ${friend}`);
       friends.push(JSON.parse(friend));
     });
-  } else if (req.method.toString() === "GET" && items[2] === `friends`) {
+    req.pipe(res);
+  } else if (req.method === "GET" && items[1] === `friends`) {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    if (items.length === 4) {
-      res.end(JSON.stringify(friends[items[3]]));
+    if (items.length === 3) {
+      res.end(JSON.stringify(friends[items[2]]));
     } else {
       res.end(JSON.stringify(friends));
     }
-  } else if (req.method.toString() === "GET" && items[2] === `messages`) {
+  } else if (req.method === "GET" && items[1] === `messages`) {
     res.setHeader("Content-Type", "text/html");
     res.write("<html>");
     res.write("<body>");
